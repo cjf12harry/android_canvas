@@ -30,6 +30,8 @@ public class MyView extends View {
         cube_vertices[7] = new Coordinate(1, 1, 1, 1);
         draw_cube_vertices=translate(cube_vertices,2,2,2);
         draw_cube_vertices=scale(draw_cube_vertices,40,40,40);
+        draw_cube_vertices=rotateZ(draw_cube_vertices,80);
+        draw_cube_vertices=rotateY(draw_cube_vertices,30);
         thisview.invalidate();//update the view
     }
 
@@ -119,5 +121,39 @@ public class MyView extends View {
         return Transformation(vertices,matrix);
     }
 
+    private Coordinate[]rotateX(Coordinate []vertices, double degree){
+        double []rxMatrix=new double[16];
+        final double theta = degree/180*Math.PI;
+        rxMatrix[0]=1;
+        rxMatrix[5]=Math.cos(theta);
+        rxMatrix[6]=Math.sin(-1*theta);
+        rxMatrix[9]=Math.sin(theta);
+        rxMatrix[10]=Math.cos(theta);
+        rxMatrix[15]=1;
+        return Transformation(vertices, rxMatrix);
+    }
 
+    private Coordinate[]rotateY(Coordinate []vertices, double degree){
+        double []rxMatrix=new double[16];
+        final double theta = degree/180*Math.PI;
+        rxMatrix[0]=Math.cos(theta);
+        rxMatrix[2]=Math.sin(theta);
+        rxMatrix[5]=1;
+        rxMatrix[8]=Math.sin(-1*theta);
+        rxMatrix[10]=Math.cos(theta);
+        rxMatrix[15]=1;
+        return Transformation(vertices, rxMatrix);
+    }
+
+    private Coordinate[]rotateZ(Coordinate []vertices, double degree){
+        double []rxMatrix=new double[16];
+        final double theta = degree/180*Math.PI;
+        rxMatrix[0]=Math.cos(theta);
+        rxMatrix[1]=Math.sin(-1*theta);
+        rxMatrix[4]=Math.sin(theta);
+        rxMatrix[5]=Math.cos(theta);
+        rxMatrix[10]=1;
+        rxMatrix[15]=1;
+        return Transformation(vertices, rxMatrix);
+    }
 }
