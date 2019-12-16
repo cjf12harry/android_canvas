@@ -1,0 +1,60 @@
+package com.bennyplo.android_mooc_graphics_3d;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.support.annotation.NonNull;
+
+public class Torso implements VisualComponents{
+    Cube neck, body, hip;
+    private Coordinate centerInWorld;
+
+    public Torso() {
+        this.neck = new Cube(100, 50, 30);
+        this.body = new Cube(100,300,550);
+        this.hip = new Cube(100, 300, 100);
+    }
+
+    public Coordinate getCenterInWorld() {
+        return centerInWorld;
+    }
+
+    public void setCenterInWorld(Coordinate centerInWorld) {
+        this.centerInWorld = centerInWorld;
+        this.neck.setCenterInWorld(new Coordinate(centerInWorld.x, centerInWorld.y+15, centerInWorld.z));
+        this.body.setCenterInWorld(CoordinateUtilities.placeBelow(neck, this.body));
+        this.hip.setCenterInWorld(CoordinateUtilities.placeBelow(this.body, this.hip));
+    }
+
+    @Override
+    public double getHeight(){
+        return neck.getHeight()+body.getHeight()+hip.getHeight();
+    }
+
+    @Override
+    public double getWidth() {
+        return body.getWidth();
+    }
+
+    @Override
+    public void rotate(@NonNull Edge axis, @NonNull double degree) {
+        neck.rotate(axis, degree);
+        body.rotate(axis, degree);
+        hip.rotate(axis, degree);
+    }
+
+    @Override
+    public void rotate(@NonNull Coordinate coordinate1, @NonNull Coordinate coordinate2, @NonNull double degree) {
+
+    }
+
+    @Override
+    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
+        neck.draw(canvas, paint);
+        body.draw(canvas, paint);
+        hip.draw(canvas, paint);
+    }
+
+    public double getNeckHeight(){
+        return neck.getHeight();
+    }
+}
