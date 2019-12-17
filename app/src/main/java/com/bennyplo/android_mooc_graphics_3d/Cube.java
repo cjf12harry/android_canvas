@@ -10,6 +10,7 @@ public class Cube implements VisualComponents {
     private Coordinate[] cube_vertices;//the vertices of a 3D cube
     private Coordinate[] display_vertices;
     private Coordinate centerInWorld;
+    private Coordinate originalCenterInWorld;
     public final double length;
     public final double width;
     public final double height;
@@ -37,6 +38,14 @@ public class Cube implements VisualComponents {
         this.display_vertices = translate(this.cube_vertices, 0, 0, 0);
     }
 
+    public Coordinate getOriginalCenterInWorld() {
+        return originalCenterInWorld;
+    }
+
+    public void setOriginalCenterInWorld(Coordinate originalCenterInWorld) {
+        this.originalCenterInWorld = originalCenterInWorld;
+    }
+
     public void setCenterInWorld(Coordinate centerInWorld) {
         this.centerInWorld = centerInWorld;
     }
@@ -47,6 +56,11 @@ public class Cube implements VisualComponents {
 
     public void attachToParent(@NonNull VisualComponents parent) {
         this.parent = parent;
+    }
+
+    public void resetToOriginal(){
+        this.centerInWorld = originalCenterInWorld.clone();
+        this.display_vertices = translate(this.cube_vertices, 0,0,0);
     }
 
 

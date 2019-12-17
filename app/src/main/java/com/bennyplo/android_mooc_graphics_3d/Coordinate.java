@@ -41,4 +41,8 @@ public class Coordinate {
         this.z=z/norm;
         w=1;
     }
+
+    public Coordinate clone(){
+        return new Coordinate(x,y,z,w);
+    }
 }

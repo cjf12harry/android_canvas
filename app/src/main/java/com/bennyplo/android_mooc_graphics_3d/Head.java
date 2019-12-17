@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 public class Head implements VisualComponents{
     private Cube head;
     private Coordinate centerInWorld; //the top-left corner
+    private Coordinate OriginalCenterInWorld;
 
     public Head() {
         this.head = new Cube(100,200,200);
@@ -19,6 +20,20 @@ public class Head implements VisualComponents{
     public void setCenterInWorld(Coordinate centerInWorld) {
         this.centerInWorld = centerInWorld;
         this.head.setCenterInWorld(new Coordinate(centerInWorld.x, centerInWorld.y+100, centerInWorld.z));
+    }
+
+    public Coordinate getOriginalCenterInWorld() {
+        return OriginalCenterInWorld;
+    }
+
+    public void setOriginalCenterInWorld(Coordinate originalCenterInWorld) {
+        OriginalCenterInWorld = originalCenterInWorld;
+        this.head.setOriginalCenterInWorld(new Coordinate(OriginalCenterInWorld.x, OriginalCenterInWorld.y+100, OriginalCenterInWorld.z));
+    }
+
+    public void reset(){
+        centerInWorld = OriginalCenterInWorld.clone();
+        head.resetToOriginal();
     }
 
     @Override

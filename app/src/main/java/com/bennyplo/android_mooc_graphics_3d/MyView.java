@@ -28,6 +28,7 @@ public class MyView extends View {
 
         robot = new Robot();
         robot.setCenterInWorld(new Coordinate(500, 100, 0));
+        robot.setOriginalCenterInWorld(new Coordinate(500, 100, 0));
 
         thisview.invalidate();//update the view
 
@@ -37,9 +38,13 @@ public class MyView extends View {
             @Override
             public void run() {
                 cube.rotate(new Coordinate(0, 0, 0, 1), new Coordinate(1, 1, 1, 1), 1);
-
+                robot.reset();
                 robot.makeSteps();
+                //robot.rotateRobotY(90);
                 robot.actionSwingBody();
+
+               // robot.makeSteps();
+               // robot.actionSwingBody();
                 thisview.invalidate();
             }
         };

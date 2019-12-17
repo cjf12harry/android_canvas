@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 public class Arm implements VisualComponents {
     Cube palm, foreArm, backArm;
     private Coordinate centerInWorld; //the top-left corner
+    private Coordinate OriginalCenterInWorld;
+
 
     public Arm() {
         backArm = new Cube(100, 100, 200);
@@ -37,6 +39,24 @@ public class Arm implements VisualComponents {
         backArm.setCenterInWorld(new Coordinate(centerInWorld.x, centerInWorld.y+100, centerInWorld.z));
         foreArm.setCenterInWorld(CoordinateUtilities.placeBelow(backArm, foreArm));
         palm.setCenterInWorld(CoordinateUtilities.placeBelow(foreArm, palm));
+    }
+
+    public Coordinate getOriginalCenterInWorld() {
+        return OriginalCenterInWorld;
+    }
+
+    public void setOriginalCenterInWorld(Coordinate originalCenterInWorld) {
+        OriginalCenterInWorld = originalCenterInWorld;
+        backArm.setOriginalCenterInWorld(new Coordinate(originalCenterInWorld.x, originalCenterInWorld.y+100, originalCenterInWorld.z));
+        foreArm.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(backArm, foreArm));
+        palm.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(foreArm, palm));
+    }
+
+    public void reset(){
+        setCenterInWorld(OriginalCenterInWorld.clone());
+        backArm.resetToOriginal();
+        foreArm.resetToOriginal();
+        palm.resetToOriginal();
     }
 
     @Override

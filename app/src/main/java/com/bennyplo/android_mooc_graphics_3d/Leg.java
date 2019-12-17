@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 public class Leg implements VisualComponents {
     private Cube thigh, calf, foot;
     private Coordinate centerInWorld; //the top-left corner
+    private Coordinate OriginalCenterInWorld;
 
     public Leg() {
         this.thigh = new Cube(100, 150, 200);
@@ -37,6 +38,17 @@ public class Leg implements VisualComponents {
         this.foot.setCenterInWorld(CoordinateUtilities.placeBelow(this.calf, this.foot));
     }
 
+    public Coordinate getOriginalCenterInWorld() {
+        return OriginalCenterInWorld;
+    }
+
+    public void setOriginalCenterInWorld(Coordinate originalCenterInWorld) {
+        OriginalCenterInWorld = originalCenterInWorld;
+        this.thigh.setOriginalCenterInWorld(new Coordinate(OriginalCenterInWorld.x, OriginalCenterInWorld.y + 100, OriginalCenterInWorld.z));
+        this.calf.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(thigh, this.calf));
+        this.foot.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(this.calf, this.foot));
+    }
+
     @Override
     public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
         thigh.draw(canvas, paint);
@@ -58,8 +70,6 @@ public class Leg implements VisualComponents {
     public void raiseLeg(final double degree) {
         final Coordinate[] rotationAxis = this.thigh.getDisplayedTopFrontAxis();
         this.thigh.rotate(rotationAxis[0], rotationAxis[1], degree);
-        this.thigh.rotate();
-        final Coordinate kneePoint = thigh.getDisplayedBottomCenter();
         this.calf.setCenterInWorld(getCalfCenterInWorld());
         this.foot.setCenterInWorld(CoordinateUtilities.placeBelow(calf, foot));
     }
@@ -71,6 +81,13 @@ public class Leg implements VisualComponents {
                 (rotationAxis[0].y+rotationAxis[1].y)/2+this.thigh.getHeight()/2,
                 (rotationAxis[0].z+rotationAxis[1].z)/2+this.thigh.getLength()/2);
         return centerInWorld;
+    }
 
+    void resetLeg(){
+        this.setCenterInWorld(OriginalCenterInWorld.clone());
+        this.thigh.resetToOriginal();
+        this.calf.resetToOriginal();
+        this.foot.resetToOriginal();
     }
 }
+

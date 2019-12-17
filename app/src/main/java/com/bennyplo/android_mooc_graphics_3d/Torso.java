@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 public class Torso implements VisualComponents{
     Cube neck, body, hip;
     private Coordinate centerInWorld;
+    private Coordinate OriginalCenterInWorld;
 
     public Torso() {
         this.neck = new Cube(100, 50, 30);
@@ -23,6 +24,17 @@ public class Torso implements VisualComponents{
         this.neck.setCenterInWorld(new Coordinate(centerInWorld.x, centerInWorld.y+15, centerInWorld.z));
         this.body.setCenterInWorld(CoordinateUtilities.placeBelow(neck, this.body));
         this.hip.setCenterInWorld(CoordinateUtilities.placeBelow(this.body, this.hip));
+    }
+
+    public Coordinate getOriginalCenterInWorld() {
+        return OriginalCenterInWorld;
+    }
+
+    public void setOriginalCenterInWorld(Coordinate originalCenterInWorld) {
+        OriginalCenterInWorld = originalCenterInWorld;
+        this.neck.setOriginalCenterInWorld(new Coordinate(originalCenterInWorld.x, originalCenterInWorld.y+15, originalCenterInWorld.z));
+        this.body.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(neck, this.body));
+        this.hip.setOriginalCenterInWorld(CoordinateUtilities.placeBelow(this.body, this.hip));
     }
 
     @Override
@@ -56,5 +68,12 @@ public class Torso implements VisualComponents{
 
     public double getNeckHeight(){
         return neck.getHeight();
+    }
+
+    public void reset(){
+        centerInWorld = OriginalCenterInWorld.clone();
+        this.neck.resetToOriginal();
+        this.body.resetToOriginal();
+        this.hip.resetToOriginal();
     }
 }
