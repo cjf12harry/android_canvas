@@ -22,9 +22,6 @@ public class MyView extends View {
         redPaint.setStyle(Paint.Style.STROKE);//Stroke
         redPaint.setColor(Color.RED);
         redPaint.setStrokeWidth(2);
-        //create a 3D cube
-        cube = new Cube(200, 200, 200);
-        cube.setCenterInWorld(new Coordinate(200, 200, 0, 1));
 
         robot = new Robot();
         robot.setCenterInWorld(new Coordinate(500, 100, 0));
@@ -34,28 +31,22 @@ public class MyView extends View {
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
+            int stepCounter = 0;
 
             @Override
             public void run() {
-                cube.rotate(new Coordinate(0, 0, 0, 1), new Coordinate(1, 1, 1, 1), 1);
                 robot.reset();
-                robot.makeSteps();
-                //robot.rotateRobotY(90);
-                robot.actionSwingBody();
-
-               // robot.makeSteps();
-               // robot.actionSwingBody();
+                robot.dance(stepCounter++);
                 thisview.invalidate();
             }
         };
-        timer.scheduleAtFixedRate(task, 100, 100);
+        timer.scheduleAtFixedRate(task, 100, 50);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         //draw objects on the screen
         super.onDraw(canvas);
-        cube.draw(canvas, redPaint);//draw a cube onto the screen
-        robot.draw(canvas, redPaint);
+        robot.draw(canvas);
     }
 }

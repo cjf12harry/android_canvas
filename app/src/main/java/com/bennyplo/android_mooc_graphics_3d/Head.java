@@ -1,6 +1,7 @@
 package com.bennyplo.android_mooc_graphics_3d;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
@@ -11,6 +12,10 @@ public class Head implements VisualComponents{
 
     public Head() {
         this.head = new Cube(100,200,200);
+        Paint headPaint = new Paint();
+        headPaint.setColor(Color.BLUE);
+        headPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        this.head.setPaint(headPaint);
     }
 
     public Coordinate getCenterInWorld() {
@@ -48,8 +53,8 @@ public class Head implements VisualComponents{
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
-        head.draw(canvas,paint);
+    public void draw(@NonNull Canvas canvas) {
+        head.draw(canvas);
     }
 
     @Override

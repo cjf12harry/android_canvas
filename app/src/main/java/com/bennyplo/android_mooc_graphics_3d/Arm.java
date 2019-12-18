@@ -1,6 +1,7 @@
 package com.bennyplo.android_mooc_graphics_3d;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
@@ -12,8 +13,24 @@ public class Arm implements VisualComponents {
 
     public Arm() {
         backArm = new Cube(100, 100, 200);
-        foreArm = new Cube(100, 100, 300);
+        foreArm = new Cube(100, 100, 150);
         palm = new Cube(200, 100, 80);
+
+        Paint backArmPaint = new Paint();
+        backArmPaint.setColor(Color.BLUE);
+        backArmPaint.setStyle(Paint.Style.FILL);
+        this.backArm.setPaint(backArmPaint);
+
+        Paint foreArmPaint = new Paint();
+        foreArmPaint.setColor(Color.GREEN);
+        foreArmPaint.setStyle(Paint.Style.FILL);
+        this.foreArm.setPaint(foreArmPaint);
+
+        Paint palmPaint = new Paint();
+        palmPaint.setColor(Color.CYAN);
+        palmPaint.setStyle(Paint.Style.FILL);
+        this.palm.setPaint(palmPaint);
+
     }
 
 
@@ -60,10 +77,10 @@ public class Arm implements VisualComponents {
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
-        backArm.draw(canvas, paint);
-        foreArm.draw(canvas, paint);
-        palm.draw(canvas, paint);
+    public void draw(@NonNull Canvas canvas) {
+        backArm.draw(canvas);
+        foreArm.draw(canvas);
+        palm.draw(canvas);
     }
 
     @Override
@@ -74,5 +91,52 @@ public class Arm implements VisualComponents {
     @Override
     public double getWidth() {
         return backArm.getWidth();
+    }
+
+    public void raiseArmForward(final double degree){
+        final Coordinate[] foreArmAxis = foreArm.getDisplayedTopFrontAxis();
+        foreArm.rotate(foreArmAxis[0], foreArmAxis[1], degree);
+        palm.rotate(foreArmAxis[0], foreArmAxis[1], degree);
+
+        final Coordinate[] shoulderAxis = backArm.getDisplayedTopBackAxis();
+        backArm.rotate(shoulderAxis[0], shoulderAxis[1],degree);
+        foreArm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+        palm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+    }
+
+    public void raiseArmToLeft(final double degree){
+        final Coordinate[] foreArmAxis = foreArm.getDisplayedTopRightAxis();
+        foreArm.rotate(foreArmAxis[0], foreArmAxis[1], degree);
+        palm.rotate(foreArmAxis[0], foreArmAxis[1], degree);
+
+        final Coordinate[] shoulderAxis = backArm.getDisplayedTopRightAxis();
+        backArm.rotate(shoulderAxis[0], shoulderAxis[1],degree);
+        foreArm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+        palm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+    }
+
+    public void raiseArmToRight(final double degree){
+        final Coordinate[] foreArmAxis = foreArm.getDisplayedTopLeftAxis();
+        foreArm.rotate(foreArmAxis[1], foreArmAxis[0], degree);
+        palm.rotate(foreArmAxis[1], foreArmAxis[0], degree);
+
+        final Coordinate[] shoulderAxis = backArm.getDisplayedTopLeftAxis();
+        backArm.rotate(shoulderAxis[1], shoulderAxis[0],degree);
+        foreArm.rotate(shoulderAxis[1], shoulderAxis[0], degree);
+        palm.rotate(shoulderAxis[1], shoulderAxis[0], degree);
+    }
+
+    public void swingArmToLeft(final double degree){
+        final Coordinate[] shoulderAxis = backArm.getDisplayedDiagonalTopRightToBottomLeftAxis();
+        backArm.rotate(shoulderAxis[0], shoulderAxis[1],degree);
+        foreArm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+        palm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+    }
+
+    public void swingArmToRight(final double degree){
+        final Coordinate[] shoulderAxis = backArm.getDisplayedDiagonalTopLeftToBottomRightAxis();
+        backArm.rotate(shoulderAxis[0], shoulderAxis[1],degree);
+        foreArm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
+        palm.rotate(shoulderAxis[0], shoulderAxis[1], degree);
     }
 }

@@ -80,13 +80,13 @@ public class Robot implements VisualComponents {
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
-        head.draw(canvas, paint);
-        torso.draw(canvas, paint);
-        leftArm.draw(canvas, paint);
-        rightArm.draw(canvas, paint);
-        leftLeg.draw(canvas, paint);
-        rightLeg.draw(canvas, paint);
+    public void draw(@NonNull Canvas canvas) {
+        head.draw(canvas);
+        torso.draw(canvas);
+        leftArm.draw(canvas);
+        rightArm.draw(canvas);
+        leftLeg.draw(canvas);
+        rightLeg.draw(canvas);
     }
 
     @Override
@@ -107,14 +107,14 @@ public class Robot implements VisualComponents {
         leftLeg.rotate(startingPoint, endingPoint, degree);
         rightLeg.rotate(startingPoint, endingPoint, degree);
         leftArm.rotate(startingPoint, endingPoint, degree);
-        rightArm.rotate(startingPoint, endingPoint, -1 * degree);
+        rightArm.rotate(startingPoint, endingPoint, degree);
     }
 
     public void actionSwingBody() {
         if (Math.abs(bodySwingDegree) >= 45) {
             bodySwingDegreeDelta *= -1;
         }
-        Log.i(TAG, "actionSwingBody: swing degree "+bodySwingDegree + " delta:"+bodySwingDegreeDelta);
+        Log.i(TAG, "actionSwingBody: swing degree " + bodySwingDegree + " delta:" + bodySwingDegreeDelta);
         bodySwingDegree += bodySwingDegreeDelta;
         rotateRobotY(bodySwingDegree);
     }
@@ -122,13 +122,14 @@ public class Robot implements VisualComponents {
     private boolean startLegMovement = true;
     private boolean leftLegMoving = true;
 
+
     public void raiseLeftLeg() {
         if (leftLegRaiseDegree >= 90) {
             leftLegRaiseDegreeDelta = -5;
             startLegMovement = false;
         } else if (leftLegRaiseDegree <= 0) {
             leftLegRaiseDegreeDelta = 5;
-            if (!startLegMovement && leftLegMoving){
+            if (!startLegMovement && leftLegMoving) {
                 startLegMovement = true;
                 leftLegMoving = false;
                 return;
@@ -144,7 +145,7 @@ public class Robot implements VisualComponents {
             startLegMovement = false;
         } else if (rightLegRaiseDegree <= 0) {
             rightLegRaiseDegreeDelta = 5;
-            if (!startLegMovement && !leftLegMoving){
+            if (!startLegMovement && !leftLegMoving) {
                 startLegMovement = true;
                 leftLegMoving = true;
                 return;
@@ -155,16 +156,151 @@ public class Robot implements VisualComponents {
         rightLeg.raiseLeg(rightLegRaiseDegree);
     }
 
-    public void raiseLeftLeg(final double degree) {
-        leftLeg.raiseLeg(degree);
-    }
-
+    //72 repetition
     public void makeSteps() {
         if (leftLegMoving) {
             raiseLeftLeg();
-        }else {
+        } else {
             raiseRightLeg();
         }
+    }
+
+    boolean startArmBackForthMovement = true;
+    boolean leftArmForthMovement = true;
+    double leftArmForwardDegree = 0;
+    double rightArmForwardDegree = 0;
+    double swingArmForthDelta = 2;
+
+    //22 repetitions
+    void swingLeftArmBackAndForth() {
+        if (leftArmForwardDegree >= 44) {
+            swingArmForthDelta = -2;
+            startArmBackForthMovement = false;
+        } else if (leftArmForwardDegree <= 0) {
+            swingArmForthDelta = 2;
+            if (!startArmBackForthMovement && leftArmForthMovement) {
+                startArmBackForthMovement = true;
+                leftArmForthMovement = false;
+                return;
+            }
+        }
+
+        leftArmForwardDegree += swingArmForthDelta;
+        leftArm.raiseArmForward(leftArmForwardDegree);
+    }
+
+    //22 repetitions
+    void swingRightArmBackAndForth() {
+        if (rightArmForwardDegree >= 44) {
+            swingArmForthDelta = -2;
+            startArmBackForthMovement = false;
+        } else if (rightArmForwardDegree <= 0) {
+            swingArmForthDelta = 2;
+            if (!startArmBackForthMovement && !leftArmForthMovement) {
+                startArmBackForthMovement = true;
+                leftArmForthMovement = true;
+                return;
+            }
+        }
+
+        rightArmForwardDegree += swingArmForthDelta;
+        rightArm.raiseArmForward(rightArmForwardDegree);
+    }
+
+    //44 repetition
+    public void FlingArmBackAndForth() {
+        if (leftArmForthMovement) {
+            swingLeftArmBackAndForth();
+        } else {
+            swingRightArmBackAndForth();
+        }
+    }
+
+    boolean startArmSideMovement = true;
+    boolean leftArmSideMovement = true;
+    double leftArmSideDegree = 0;
+    double rightArmSideDegree = 0;
+    double swingArmSideDelta = 2;
+
+    //44 repetition
+    public void flingRightArmToSide() {
+        if (rightArmSideDegree >= 44) {
+            swingArmSideDelta = -2;
+            startArmSideMovement = false;
+        } else if (rightArmSideDegree <= 0) {
+            swingArmSideDelta = 2;
+            if (!startArmSideMovement && !leftArmSideMovement) {
+                startArmSideMovement = true;
+                leftArmSideMovement = true;
+                return;
+            }
+        }
+        rightArmSideDegree += swingArmSideDelta;
+        rightArm.raiseArmToRight(rightArmSideDegree);
+    }
+
+    //44 repetition
+    public void flingLeftArmToSide() {
+        if (leftArmSideDegree >= 44) { //22
+            swingArmSideDelta = -2;
+            startArmSideMovement = false;
+        } else if (leftArmSideDegree <= 0) { //22
+            swingArmSideDelta = 2;
+            if (!startArmSideMovement && leftArmSideMovement) {
+                startArmSideMovement = true;
+                leftArmSideMovement = false;
+                return;
+            }
+        }
+        leftArmSideDegree += swingArmSideDelta;
+        leftArm.raiseArmToLeft(leftArmSideDegree);
+    }
+
+    public void FlingArmToOppositeSides() {
+        if (leftArmSideMovement) {
+            flingLeftArmToSide();
+        } else {
+            flingRightArmToSide();
+        }
+    }
+
+    double degree = 0;
+    double armsSideSwingDegree = 0;
+    double armsSideSwingDegreeDelta = 2;
+    //44 repetition
+    public void swingArmToOneSide() {
+        leftArm.raiseArmForward(30);
+        rightArm.raiseArmForward(30);
+
+        if (Math.abs(armsSideSwingDegree)>=44){
+            armsSideSwingDegreeDelta*=-1;
+            if (armsSideSwingDegree == 0){
+                return;
+            }
+        }
+        armsSideSwingDegree+=armsSideSwingDegreeDelta;
+        leftArm.swingArmToLeft(armsSideSwingDegree);
+        rightArm.swingArmToLeft(armsSideSwingDegree);
+    }
+
+    public void dance(final int stepNumber){
+        //88 - back and forth     88 - oppo side      88 - same side
+        int handMovement = stepNumber%264;
+        if (handMovement>=0 && handMovement<=88){
+            FlingArmBackAndForth();
+        } else if (handMovement>88 && handMovement<=176){
+            FlingArmToOppositeSides();
+        } else {
+            swingArmToOneSide();
+        }
+
+        //72 make steps
+        int footMovement = stepNumber%264;
+        if (footMovement>=0 && handMovement<=144){
+            makeSteps();
+        }
+
+        actionSwingBody();
     }
 
 

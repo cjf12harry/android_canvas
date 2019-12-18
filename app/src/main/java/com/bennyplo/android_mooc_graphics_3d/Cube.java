@@ -1,7 +1,9 @@
 package com.bennyplo.android_mooc_graphics_3d;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Quaternion;
@@ -14,7 +16,8 @@ public class Cube implements VisualComponents {
     public final double length;
     public final double width;
     public final double height;
-    private VisualComponents parent;
+    private Paint paint;
+    private Paint blackOutline;
 
 
     public Cube(final double length,
@@ -36,6 +39,10 @@ public class Cube implements VisualComponents {
         this.cube_vertices[6] = new Coordinate(1 * w, 1 * h, -1 * l, 1);
         this.cube_vertices[7] = new Coordinate(1 * w, 1 * h, 1 * l, 1);
         this.display_vertices = translate(this.cube_vertices, 0, 0, 0);
+        this.blackOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+        blackOutline.setStyle(Paint.Style.STROKE);
+        blackOutline.setColor(Color.BLACK);
+        blackOutline.setStrokeWidth(2);
     }
 
     public Coordinate getOriginalCenterInWorld() {
@@ -54,13 +61,13 @@ public class Cube implements VisualComponents {
         return centerInWorld;
     }
 
-    public void attachToParent(@NonNull VisualComponents parent) {
-        this.parent = parent;
+    public void setPaint(Paint paint) {
+        this.paint = paint;
     }
 
-    public void resetToOriginal(){
+    public void resetToOriginal() {
         this.centerInWorld = originalCenterInWorld.clone();
-        this.display_vertices = translate(this.cube_vertices, 0,0,0);
+        this.display_vertices = translate(this.cube_vertices, 0, 0, 0);
     }
 
 
@@ -204,21 +211,29 @@ public class Cube implements VisualComponents {
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas,
-                     @NonNull Paint paint) {
+    public void draw(@NonNull Canvas canvas) {
         final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
-        DrawLinePairs(canvas, finalDisplayVertices, 0, 1, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 1, 3, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 3, 2, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 2, 0, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 4, 5, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 5, 7, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 7, 6, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 6, 4, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 0, 4, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 1, 5, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 2, 6, paint);
-        DrawLinePairs(canvas, finalDisplayVertices, 3, 7, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{0,1,3,2}, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{0,4,6,2}, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{4,5,7,6}, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{1,5,7,3}, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{0,1,4,5}, paint);
+        DrawRectFace(canvas, finalDisplayVertices, new int[]{2,3,7,6}, paint);
+
+
+        DrawLinePairs(canvas, finalDisplayVertices, 0, 1, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 1, 3, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 3, 2, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 2, 0, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 4, 5, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 5, 7, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 7, 6, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 6, 4, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 0, 4, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 1, 5, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 2, 6, blackOutline);
+        DrawLinePairs(canvas, finalDisplayVertices, 3, 7, blackOutline);
+
     }
 
     @Override
@@ -231,7 +246,7 @@ public class Cube implements VisualComponents {
         return width;
     }
 
-    public double getLength(){
+    public double getLength() {
         return length;
     }
 
@@ -244,6 +259,17 @@ public class Cube implements VisualComponents {
         canvas.drawLine((int) vertices[start].x, (int) vertices[start].y, (int) vertices[end].x, (int) vertices[end].y, paint);
     }
 
+    private void DrawRectFace(Canvas canvas, Coordinate[] vertices, int[] index, Paint paint) {
+        Path path = new Path();
+        path.moveTo((float) vertices[index[0]].x, (float) vertices[index[0]].y);
+        path.lineTo((float) vertices[index[1]].x, (float) vertices[index[1]].y);
+        path.lineTo((float) vertices[index[2]].x, (float) vertices[index[2]].y);
+        path.lineTo((float) vertices[index[3]].x, (float) vertices[index[3]].y);
+        path.close();
+        canvas.drawPath(path, paint);
+    }
+
+
     public Coordinate getDisplayedBottomCenter() {
         final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
         final Coordinate bottomCenter = new Coordinate(
@@ -254,24 +280,59 @@ public class Cube implements VisualComponents {
         return bottomCenter;
     }
 
-    public Coordinate[] getDisplayedTopFrontAxis(){
+    public Coordinate[] getDisplayedTopFrontAxis() {
         final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
         final Coordinate startPoint = finalDisplayVertices[0];
         final Coordinate endPoint = finalDisplayVertices[4];
         return new Coordinate[]{startPoint, endPoint};
     }
 
-    public Coordinate[] getDisplayedTopBackAxis(){
+    public Coordinate[] getDisplayedTopBackAxis() {
         final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
         final Coordinate startPoint = finalDisplayVertices[1];
         final Coordinate endPoint = finalDisplayVertices[5];
         return new Coordinate[]{startPoint, endPoint};
     }
 
-    public Coordinate[] getDisplayedBottomBackAxis(){
+    public Coordinate[] getDisplayedBottomBackAxis() {
         final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
         final Coordinate startPoint = finalDisplayVertices[2];
         final Coordinate endPoint = finalDisplayVertices[6];
+        return new Coordinate[]{startPoint, endPoint};
+    }
+
+    public Coordinate[] getDisplayedTopRightAxis() {
+        final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
+        final Coordinate startPoint = finalDisplayVertices[4];
+        final Coordinate endPoint = finalDisplayVertices[5];
+        return new Coordinate[]{startPoint, endPoint};
+    }
+
+    public Coordinate[] getDisplayedTopLeftAxis() {
+        final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
+        final Coordinate startPoint = finalDisplayVertices[0];
+        final Coordinate endPoint = finalDisplayVertices[1];
+        return new Coordinate[]{startPoint, endPoint};
+    }
+
+    public Coordinate[] getDisplayedBottomRightAxis() {
+        final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
+        final Coordinate startPoint = finalDisplayVertices[6];
+        final Coordinate endPoint = finalDisplayVertices[7];
+        return new Coordinate[]{startPoint, endPoint};
+    }
+
+    public Coordinate[] getDisplayedDiagonalTopRightToBottomLeftAxis() {
+        final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
+        final Coordinate startPoint = finalDisplayVertices[5];
+        final Coordinate endPoint = finalDisplayVertices[2];
+        return new Coordinate[]{startPoint, endPoint};
+    }
+
+    public Coordinate[] getDisplayedDiagonalTopLeftToBottomRightAxis() {
+        final Coordinate[] finalDisplayVertices = translate(display_vertices, centerInWorld.x, centerInWorld.y, centerInWorld.z);
+        final Coordinate startPoint = finalDisplayVertices[0];
+        final Coordinate endPoint = finalDisplayVertices[7];
         return new Coordinate[]{startPoint, endPoint};
     }
 

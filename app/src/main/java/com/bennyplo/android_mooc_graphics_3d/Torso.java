@@ -1,6 +1,7 @@
 package com.bennyplo.android_mooc_graphics_3d;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
@@ -13,6 +14,20 @@ public class Torso implements VisualComponents{
         this.neck = new Cube(100, 50, 30);
         this.body = new Cube(100,300,550);
         this.hip = new Cube(100, 300, 100);
+        Paint neckPaint = new Paint();
+        neckPaint.setColor(Color.MAGENTA);
+        neckPaint.setStyle(Paint.Style.FILL);
+        this.neck.setPaint(neckPaint);
+
+        Paint bodyPaint = new Paint();
+        bodyPaint.setColor(Color.RED);
+        bodyPaint.setStyle(Paint.Style.FILL);
+        this.body.setPaint(bodyPaint);
+
+        Paint hipPaint = new Paint();
+        hipPaint.setColor(Color.MAGENTA);
+        hipPaint.setStyle(Paint.Style.FILL);
+        this.hip.setPaint(hipPaint);
     }
 
     public Coordinate getCenterInWorld() {
@@ -60,10 +75,10 @@ public class Torso implements VisualComponents{
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
-        neck.draw(canvas, paint);
-        body.draw(canvas, paint);
-        hip.draw(canvas, paint);
+    public void draw(@NonNull Canvas canvas) {
+        neck.draw(canvas);
+        body.draw(canvas);
+        hip.draw(canvas);
     }
 
     public double getNeckHeight(){

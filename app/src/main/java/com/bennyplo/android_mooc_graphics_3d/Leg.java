@@ -1,6 +1,7 @@
 package com.bennyplo.android_mooc_graphics_3d;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
@@ -13,6 +14,21 @@ public class Leg implements VisualComponents {
         this.thigh = new Cube(100, 150, 200);
         this.calf = new Cube(100, 150, 200);
         this.foot = new Cube(100, 150, 80);
+
+        Paint thighPaint = new Paint();
+        thighPaint.setColor(Color.BLUE);
+        thighPaint.setStyle(Paint.Style.FILL);
+        this.thigh.setPaint(thighPaint);
+
+        Paint calfPaint = new Paint();
+        calfPaint.setColor(Color.GREEN);
+        calfPaint.setStyle(Paint.Style.FILL);
+        this.calf.setPaint(calfPaint);
+
+        Paint footPaint = new Paint();
+        footPaint.setColor(Color.RED);
+        footPaint.setStyle(Paint.Style.FILL);
+        this.foot.setPaint(footPaint);
     }
 
     @Override
@@ -50,10 +66,10 @@ public class Leg implements VisualComponents {
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas, @NonNull Paint paint) {
-        thigh.draw(canvas, paint);
-        calf.draw(canvas, paint);
-        foot.draw(canvas, paint);
+    public void draw(@NonNull Canvas canvas) {
+        thigh.draw(canvas);
+        calf.draw(canvas);
+        foot.draw(canvas);
 
     }
 
